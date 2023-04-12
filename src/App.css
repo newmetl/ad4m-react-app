@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+span.TodoItem.checked {
+  text-decoration: line-through;
+}
+
+.remove-button {
+  cursor: pointer;
+}
+
+.todo-list {
+  cursor: pointer;
+}
+
+.todo-list.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
