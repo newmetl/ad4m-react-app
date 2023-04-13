@@ -9,7 +9,7 @@ import TodoList from './components/TodoList';
 import CreateTodo from './components/CreateTodo';
 import { Todo } from './types/Todo';
 
-import { fetchTodos, updateTodo } from './ad4m/todos';
+import { deleteTodo, fetchTodos, updateTodo } from './ad4m/todos';
 
 import { PROJECT_ID, PERSPECTIVE_NAME } from './constants';
 
@@ -92,28 +92,21 @@ function App() {
   const onRemoveTodo = (todoId: string) => {
     console.log('--> onRemoveTodo()', todoId);
     setIsLoadingState(true);
-    ad4mClient?.perspective.all().then((perspectives) => {
-      const perspective = perspectives.find(p => p.name === PERSPECTIVE_NAME)
-      if (!perspective) {
-        // console.log('Creating perspective');
-        // ad4mClient.perspective.add(PERSPECTIVE_NAME).then((result) => console.log(result));
-      } else {
-        console.log('Perspective found', perspective.name, perspective);
-      }
-      if (perspective) {
-        // console.log('Getting clicked link');
-        perspective.get(new LinkQuery({ source: todoId})).then((queryResults) => {
-          perspective.removeLinks(queryResults)
-            .then(() => loadTodosFromPerspective());
-        });
 
-        perspective.get(new LinkQuery({ source: PROJECT_ID, target: todoId})).then((queryResults) => {
-          perspective.removeLinks(queryResults)
-            .then(() => loadTodosFromPerspective());
-        });
+    const todo: Todo | undefined = todos.find((item) => item.id === todoId);
 
-      }
-    });
+    if (todo) {
+      getAd4mClient().then((client) => {
+        ensurePerspectiveAndProject(client).then((perspective) => {
+          deleteTodo(perspective, PROJECT_ID, todo).then(() => {
+            loadTodosFromPerspective();
+          });
+        });
+      });
+    } else {
+      console.log('Delete failed. Cannot find todo with id:', todoId);
+    }
+
   }
 
   return (

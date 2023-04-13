@@ -107,3 +107,19 @@ export async function updateTodo(perspective: PerspectiveProxy, todo: Todo): Pro
 
     });
 }
+
+export async function deleteTodo(perspective: PerspectiveProxy, projectId: string, todo: Todo): Promise<Todo> {
+    const promises: Promise<LinkExpression[]>[] = [];
+
+    let queryResults = await perspective.get(new LinkQuery({ source: todo.id}));
+    promises.push(perspective.removeLinks(queryResults));
+
+    queryResults = await perspective.get(new LinkQuery({ source: projectId, target: todo.id}));
+    promises.push(perspective.removeLinks(queryResults));
+            
+    // return todo after all links are removed
+    return new Promise((resolve) => {
+        Promise.all(promises).then(() => resolve(todo));
+    });
+
+}
