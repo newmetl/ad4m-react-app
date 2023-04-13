@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { LinkQuery, Ad4mClient, Link, LinkExpressionInput, Perspective } from "@perspect3vism/ad4m";
 import { getAd4mClient } from '@perspect3vism/ad4m-connect';
 
 import { connectToAd4m, ensurePerspectiveAndProject } from './ad4m/setup';
+import { deleteTodo, fetchTodos, updateTodo, createTodo } from './ad4m/todos';
+
+import { PROJECT_ID } from './constants';
+import { Todo } from './types/Todo';
 
 import TodoList from './components/TodoList';
 import CreateTodo from './components/CreateTodo';
-import { Todo } from './types/Todo';
-
-import { deleteTodo, fetchTodos, updateTodo } from './ad4m/todos';
-
-import { PROJECT_ID, PERSPECTIVE_NAME } from './constants';
 
 import './App.css';
-
-import createTodo from './ad4m/create-todo';
 
 function App() {
   console.log('--> render()');
@@ -46,7 +42,7 @@ function App() {
 
     if (!isConnected) {
       console.log('-- --> ad4m not connected. Connecting now ...');
-      connectToAd4m().then((client: Ad4mClient) => {
+      connectToAd4m().then((client) => {
         ensurePerspectiveAndProject(client).then(() => {
           loadTodosFromPerspective();
         });
