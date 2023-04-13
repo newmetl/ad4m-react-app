@@ -18,7 +18,7 @@ function TodoItem({ id, text, checked, clickHandler, onRemove }: TodoItemProps) 
         <span
             className={checked ? "TodoItem checked" : "TodoItem"}
             onClick={onClickHandler}>{text}</span>
-        <span className={'remove-button'} onClick={onRemoveHandler}>(Remove)</span>
+        <span className={'remove-button'} onClick={onRemoveHandler}> (X)</span>
     </li>;
 }
 

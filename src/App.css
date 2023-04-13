@@ -43,6 +43,9 @@ span.TodoItem.checked {
 
 .remove-button {
   cursor: pointer;
+  font-size: 0.7em;
+  font-weight: 800;
+  color: red;
 }
 
 .todo-list {
