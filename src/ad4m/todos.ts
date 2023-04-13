@@ -1,4 +1,4 @@
-import { Literal, PerspectiveProxy, LinkQuery, Link, LinkExpressionInput, LinkExpression } from "@perspect3vism/ad4m";
+import { Literal, PerspectiveProxy, LinkQuery, Link, LinkExpression } from "@perspect3vism/ad4m";
 import { Todo } from "../types/Todo";
 
 export async function fetchTodos(perspective: PerspectiveProxy, projectId: string): Promise<Todo[]> {
