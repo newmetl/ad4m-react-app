@@ -1,4 +1,4 @@
-import { Literal, PerspectiveProxy, LinkQuery, LinkExpression } from "@perspect3vism/ad4m";
+import { Literal, PerspectiveProxy, LinkQuery, Link, LinkExpressionInput, LinkExpression } from "@perspect3vism/ad4m";
 import { Todo } from "../types/Todo";
 
 export async function fetchTodos(perspective: PerspectiveProxy, projectId: string): Promise<Todo[]> {
@@ -65,4 +65,45 @@ export async function createTodo(perspective: PerspectiveProxy, projectId: strin
     predicate: "todo://state", 
     target: `todo://${state.toString()}`
   });
+}
+
+export async function updateTodo(perspective: PerspectiveProxy, todo: Todo): Promise<Todo> {
+    const queryResults = await perspective.get(new LinkQuery({ source: todo.id }));
+
+    let linkPromises: (Promise<LinkExpression> | undefined)[] = queryResults.map((linkExpression) => {
+        const attrName = linkExpression.data.predicate.substring(7);
+
+        if (attrName == "title") {
+
+            const updateLink = new Link({
+                source: todo.id,
+                predicate: "todo://title",
+                target: Literal.from(todo.title).toUrl()
+            });
+
+            return perspective.update(linkExpression, updateLink);
+        }
+
+        if (attrName == "state") {
+
+            const updateLink = new Link({
+                source: todo.id,
+                predicate: "todo://state",
+                target: `todo://${(!!todo.state).toString()}`
+            });
+
+            return perspective.update(linkExpression, updateLink);
+        }
+
+    });
+
+    linkPromises = linkPromises.filter((promise) => promise !== undefined);
+
+    // return todo after all links were updated
+    return new Promise((resolve) => {
+        Promise.all(linkPromises).then(() => {
+            resolve(todo);
+        });
+
+    });
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { LinkQuery, Ad4mClient, Link, LinkExpressionInput } from "@perspect3vism/ad4m";
+import { LinkQuery, Ad4mClient, Link, LinkExpressionInput, Perspective } from "@perspect3vism/ad4m";
 import { getAd4mClient } from '@perspect3vism/ad4m-connect';
 
 import { connectToAd4m, ensurePerspectiveAndProject } from './ad4m/setup';
@@ -9,7 +9,7 @@ import TodoList from './components/TodoList';
 import CreateTodo from './components/CreateTodo';
 import { Todo } from './types/Todo';
 
-import { fetchTodos } from './ad4m/todos';
+import { fetchTodos, updateTodo } from './ad4m/todos';
 
 import { PROJECT_ID, PERSPECTIVE_NAME } from './constants';
 
@@ -17,11 +17,9 @@ import './App.css';
 
 import createTodo from './ad4m/create-todo';
 
-
 function App() {
   console.log('--> render()');
 
-  const [ad4mClient, setAd4mClient] = useState<Ad4mClient | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isLoadingState, setIsLoadingState] = useState(false);
 
@@ -55,62 +53,25 @@ function App() {
         setIsConnected(true);
       });
     }
-		
-		/*
-		* Display the UI, asking the user to approve and grant these capabilities.
-		*/
-    
+
 	}, []);
 
   const onClickTodoItem = (todoId: string) => {
     console.log('--> onClickTodoItem');
     setIsLoadingState(true);
-    ad4mClient?.perspective.all().then((perspectives) => {
-      const perspective = perspectives.find(p => p.name === PERSPECTIVE_NAME)
-      if (!perspective) {
-        // console.log('Creating perspective');
-        // ad4mClient.perspective.add(PERSPECTIVE_NAME).then((result) => console.log(result));
-      } else {
-        console.log('Perspective found', perspective.name, perspective);
-      }
-      if (perspective) {
-        // console.log('Getting clicked link');
-        perspective.get(new LinkQuery({ source: todoId})).then((queryResults) => {
-          // console.log('Found all links for todo:', todoId, queryResults);
-          // building a new todo
-          const todo: Todo = { id: todoId };
-          queryResults.map((result) => {
-            // console.log('Todo link result', result.data);
-            const attrName = result.data.predicate.substring(7);
-            // console.log('attrName', attrName);
-            // if (attrName == "title")
-            //   todo.title = decodeURIComponent(result.data.target.substring(17));
-            if (attrName == "state") {
-              // console.log('result.data.target', result.data.target);
-              const checked = result.data.target.substring(7) === 'true';
-              // console.log('passed check state', checked);
-              const newTarget = `todo://${!checked ? 'true' : 'false'}`;
-              // console.log('new checked state', newTarget);
-              const newLink = new Link({
-                source: todoId,
-                predicate: "todo://state",
-                target: newTarget
-              });
-              // console.log('Updating link', result, newLink);
-              const linkExpressionInput = new LinkExpressionInput();
-              perspective.update(result, newLink).then(() => {
-                // console.log('After update link');
-                loadTodosFromPerspective();
-              });
-            }
-            
-            // queryTodos[todo.id] = todo;
+    getAd4mClient().then((client) => {
+      ensurePerspectiveAndProject(client).then((perspective) => {
+        const todo = todos.find((todo) => todo.id === todoId);
+        if (todo) {
+          const newTodo = {
+            ...todo,
+            state: !todo.state
+          }
+          updateTodo(perspective, newTodo).then(() => {
+            loadTodosFromPerspective();
           });
-          // console.log('queryTodos', queryTodos);
-          // setTodos(Object.values(queryTodos));
-        });
-      } else
-        console.log('No perspective found');
+        }
+      });
     });
   }
 
