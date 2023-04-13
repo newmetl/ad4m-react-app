@@ -1,7 +1,8 @@
 import { getAd4mClient } from "@perspect3vism/ad4m-connect";
 import type { Ad4mClient, PerspectiveProxy } from "@perspect3vism/ad4m";
+import { LinkQuery } from "@perspect3vism/ad4m";
 
-const PERSPECTIVE_NAME = "AD4M Tutorial Neighbourhoods";
+import { PERSPECTIVE_NAME } from "../constants";
 
 async function createPerspective(): Promise<PerspectiveProxy> {
   const ad4m: Ad4mClient = await getAd4mClient();
