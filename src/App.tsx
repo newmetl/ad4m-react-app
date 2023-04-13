@@ -78,23 +78,15 @@ function App() {
   const onCreateNewTodo = (text: string) => {
     console.log('--> onCreateNewTodo()', text);
     setIsLoadingState(true);
-    
-    ad4mClient?.perspective.all().then((perspectives) => {
-      const perspective = perspectives.find(p => p.name === PERSPECTIVE_NAME)
-      if (!perspective) {
-        // console.log('Creating perspective');
-        // ad4mClient.perspective.add(PERSPECTIVE_NAME).then((result) => console.log(result));
-      } else {
-        console.log('Perspective found', perspective.name, perspective);
-      }
-      if (perspective)
-        createTodo(perspective, PROJECT_ID, text, false);
-      else
-        console.log('No perspective found');
 
+    getAd4mClient().then((client) => {
+      ensurePerspectiveAndProject(client).then((perspective) => {
+        createTodo(perspective, PROJECT_ID, text, false).then(() => {
+          loadTodosFromPerspective();
+        });
+      });
     });
 
-    loadTodosFromPerspective();
   }
 
   const onRemoveTodo = (todoId: string) => {
