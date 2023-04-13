@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, KeyboardEvent, ChangeEvent } from 'react';
-import { Todo } from './Todo';
+import { Todo } from './types/Todo';
 
 interface CreateTodoProps {
     onSubmit(text: string): void;
