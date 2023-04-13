@@ -5,8 +5,8 @@ import { getAd4mClient } from '@perspect3vism/ad4m-connect';
 
 import { connectToAd4m, ensurePerspectiveAndProject } from './ad4m/setup';
 
-import TodoList from './TodoList';
-import CreateTodo from './CreateTodo';
+import TodoList from './components/TodoList';
+import CreateTodo from './components/CreateTodo';
 import { Todo } from './types/Todo';
 
 import { fetchTodos } from './ad4m/todos';
