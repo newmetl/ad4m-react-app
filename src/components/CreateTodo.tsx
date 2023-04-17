@@ -7,10 +7,6 @@ interface CreateTodoProps {
 
 function TodoItem({ onSubmit }: CreateTodoProps) {
     const [text, setText] = useState('');
-    const onSubmitHandler = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        onSubmit(event.currentTarget.value);
-    }
 
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
