@@ -1,6 +1,3 @@
-import React from 'react';
-import { Todo } from '../types/Todo';
-
 interface ResetAd4mButtonProps {
     clickHandler(): void;
 }
