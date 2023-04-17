@@ -2,15 +2,22 @@ import type { Ad4mClient, PerspectiveProxy } from "@perspect3vism/ad4m";
 import { LinkQuery } from "@perspect3vism/ad4m";
 import Ad4mConnectUI from '@perspect3vism/ad4m-connect';
 
-import { PERSPECTIVE_NAME, PROJECT_ID, PROJECT_NAME } from "../constants";
+import {
+  APP_DESCRIPTION,
+  APP_DOMAIN,
+  APP_ICON_PATH,
+  APP_NAME,
+  PERSPECTIVE_NAME,
+  PROJECT_ID,
+  PROJECT_NAME } from "../constants";
 
 export async function connectToAd4m(): Promise<Ad4mClient> {
   const ui = Ad4mConnectUI({
-    appName: "AD4M React",
-    appDesc: "AD4M - React Test App",
-    appDomain: "dev.ad4m.react-test-app",
+    appName: APP_NAME,
+    appDesc: APP_DESCRIPTION,
+    appDomain: APP_DOMAIN,
     capabilities: [{ with: { domain: "*", pointers: ["*"] }, can: ["*"] }],
-    appIconPath: "https://i.ibb.co/GnqjPJP/icon.png",
+    appIconPath: APP_ICON_PATH,
   });
 
   return ui.connect();
