@@ -4,12 +4,14 @@ import { getAd4mClient } from '@perspect3vism/ad4m-connect';
 
 import { connectToAd4m, ensurePerspectiveAndProject } from './ad4m/setup';
 import { deleteTodo, fetchTodos, updateTodo, createTodo } from './ad4m/todos';
+import { resetAd4m } from './ad4m/reset';
 
 import { PROJECT_ID } from './constants';
 import { Todo } from './types/Todo';
 
 import TodoList from './components/TodoList';
 import CreateTodo from './components/CreateTodo';
+import ResetAd4mButton from './components/ResetAd4mButton';
 
 import './App.css';
 import { PerspectiveProxy } from '@perspect3vism/ad4m';
@@ -92,6 +94,15 @@ function App() {
 
   }
 
+  const onResetButton = () => {
+    getAd4mClient()
+      .then((client) => resetAd4m(client))
+      .then(() => {
+        window.alert('AD4M was reset. Reloading now.');
+        window.location.reload();
+      });
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -101,6 +112,7 @@ function App() {
           onRemove={handleRemoveTodo}
           data={todos} />
         <CreateTodo onSubmit={handleCreateNewTodo} />
+        <ResetAd4mButton clickHandler={onResetButton} />
       </header>
     </div>
   );
