@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { getAd4mClient } from '@perspect3vism/ad4m-connect';
+import { PerspectiveProxy } from '@perspect3vism/ad4m';
 
 import { connectToAd4m, ensurePerspectiveAndProject } from './ad4m/setup';
 import { deleteTodo, fetchTodos, updateTodo, createTodo } from './ad4m/todos';
@@ -14,7 +15,6 @@ import CreateTodo from './components/CreateTodo';
 import ResetAd4mButton from './components/ResetAd4mButton';
 
 import './App.css';
-import { PerspectiveProxy } from '@perspect3vism/ad4m';
 
 function usingAd4m(): Promise<PerspectiveProxy> {
   return getAd4mClient().then((client) => ensurePerspectiveAndProject(client));
